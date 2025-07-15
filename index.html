@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>แบบสอบถามแมวน้อย</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      background: #f0f0f0;
+      font-family: "Kanit", sans-serif;
+      overflow-x: hidden;
+    }
+    .container {
+      position: relative;
+      width: 80vmin;
+      aspect-ratio: 4 / 3;
+      background: #fff;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      overflow: visible;
+    }
+    #question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      min-height: 60px;
+    }
+    .image {
+      width: 100%;
+      height: 40%;
+      margin: 20px 0;
+      background: #ddd;
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+      overflow: visible;
+    }
+    .image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .buttons {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    button {
+      width: 48%;
+      padding: 12px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    button.reject {
+      background-color: #f44336;
+    }
+    button.reject:hover {
+      background-color: #d32f2f;
+    }
+    #heartBtn {
+      margin-top: 10px;
+      font-size: 2.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #e0245e;
+      user-select: none;
+      transition: transform 0.2s;
+      position: relative;
+      z-index: 10;
+      display: none; /* ซ่อนตอนเริ่ม */
+    }
+    #heartBtn:hover {
+      transform: scale(1.3);
+    }
+    #specialAgreeBtn {
+      display: none;
+      margin-top: 15px;
+      width: 100px;
+      padding: 10px;
+      font-size: 1.2rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      align-self: center;
+      user-select: none;
+      z-index: 10;
+      position: relative;
+    }
+    #specialAgreeBtn:hover {
+      background-color: #45a049;
+    }
+    .heart-particle {
+      position: absolute;
+      color: #e0245e;
+      font-size: 2rem;
+      user-select: none;
+      pointer-events: none;
+      will-change: transform, opacity;
+      animation-fill-mode: forwards;
+      z-index: 1000;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="question">กลับมาเป็นแมวเด่กกให้เค้าได้มั้ยยTT</div>
+    <div class="image">
+      <img id="image" src="https://via.placeholder.com/400x300?text=Page+1" alt="รูปภาพ" />
+    </div>
+
+    <div class="buttons" id="btnContainer">
+      <button onclick="agree()">ตกลง</button>
+      <button class="reject" onclick="disagree()">ปฏิเสธ</button>
+    </div>
+
+    <button id="heartBtn" title="กดหัวใจ">❤️</button>
+    <button id="specialAgreeBtn">ตกลง</button>
+  </div>
+
+<script>
+  const questions = {
+    1: "กลับมาเป็นแมวเด่กกให้เค้าได้มั้ยยTT",
+    2: "เย่ๆๆๆๆขอบคุณนะ หมาแก่มีเจ้าของแยะ มีแมวเด่กแย้วว<3",
+    3: "เค้าขอโอกาสอีกรอบบได้มั้ย",
+    4: "เค้าสัญญาจะปรับปรุงตัวให้ดีกว่าเดิมบี๋ไม่ชอบอันไหนบอกเค้าได้เลยTT",
+    5: "มันสิไห้ละนั่น ขอได้มั้ยยTT",
+    6: "Alongkorn MISSION FAIL อันนี้"
+  };
+
+  const images = {
+    1: "https://via.placeholder.com/400x300?text=Page+1",
+    2: "https://via.placeholder.com/400x300?text=Page+2",
+    3: "https://via.placeholder.com/400x300?text=Page+3",
+    4: "https://via.placeholder.com/400x300?text=Page+4",
+    5: "https://via.placeholder.com/400x300?text=Page+5",
+    6: "https://via.placeholder.com/400x300?text=Page+6"
+  };
+
+  let currentPage = 1;
+
+  function renderPage(page) {
+    document.getElementById("question").innerText = questions[page];
+    document.getElementById("image").src = images[page] || "";
+
+    const btnContainer = document.getElementById("btnContainer");
+    const heartBtn = document.getElementById("heartBtn");
+    const specialAgreeBtn = document.getElementById("specialAgreeBtn");
+
+    if(page === 2){
+      btnContainer.style.display = "none";
+      heartBtn.style.display = "inline-block";
+      specialAgreeBtn.style.display = "inline-block";
+    } else if(page === 6){
+      btnContainer.style.display = "none";
+      heartBtn.style.display = "none";
+      specialAgreeBtn.style.display = "none";
+    } else {
+      btnContainer.style.display = "flex";
+      heartBtn.style.display = "none";
+      specialAgreeBtn.style.display = "none";
+    }
+  }
+
+  function agree() {
+    currentPage = 2;
+    renderPage(currentPage);
+  }
+
+  function disagree() {
+    if(currentPage === 1){
+      currentPage = 3;
+    } else {
+      currentPage++;
+    }
+    if(currentPage > 6){
+      alert("คุณเลือกปฏิเสธจนถึงที่สุด");
+      return;
+    }
+    renderPage(currentPage);
+  }
+
+  const heartBtn = document.getElementById("heartBtn");
+  const container = document.querySelector(".container");
+
+  heartBtn.addEventListener("click", () => {
+    createHeartsRandom(2 + Math.floor(Math.random()*4)); // สุ่ม 2-5 ดวง
+  });
+
+  function createHeartsRandom(count) {
+    const containerRect = container.getBoundingClientRect();
+    const usedPositions = [];
+
+    for(let i=0; i<count; i++){
+      const heart = document.createElement("div");
+      heart.classList.add("heart-particle");
+      heart.textContent = "❤️";
+
+      const btnRect = heartBtn.getBoundingClientRect();
+      const startX = btnRect.left + btnRect.width/2 - containerRect.left;
+      const startY = btnRect.top + btnRect.height/2 - containerRect.top;
+      heart.style.left = startX + "px";
+      heart.style.top = startY + "px";
+
+      let posX;
+      let tries = 0;
+      do {
+        posX = Math.random() * (containerRect.width - 40) + 20;
+        tries++;
+      } while(usedPositions.some(x => Math.abs(x - posX) < 30) && tries < 10);
+      usedPositions.push(posX);
+
+      container.appendChild(heart);
+
+      setTimeout(() => {
+        heart.style.transition = "transform 2s ease-out, opacity 2s ease-out";
+        const translateX = posX - startX;
+        const translateY = -(startY - 20);
+        heart.style.transform = `translate(${translateX}px, ${translateY}px) scale(1.3)`;
+        heart.style.opacity = 0;
+      }, i * 100);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 2200);
+    }
+  }
+
+  specialAgreeBtn.addEventListener("click", () => {
+    alert("ขอบคุณที่กดตกลง ❤️");
+  });
+
+  renderPage(currentPage);
+</script>
+</body>
+</html>
